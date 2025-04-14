@@ -30,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
             uri -> {
                 if (uri != null) {
                     currentAudioPath = uri.toString();
-                    updateSongTitle(uri);
+
+                    String fileName = AudioUtil.extractSongName(this, uri);
+                    tvTitulo.setText(fileName);
+
 
                     // Mostrar botão Play após seleção
                     findViewById(R.id.btnPlay).setVisibility(Button.VISIBLE);
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         btnSelect.setOnClickListener(v -> openAudioPicker());
 
         btnPlay.setOnClickListener(v -> {
-            Log.i("AudioPlayMainActivity", "btnPlay");
+            Log.i("AudioPlayMainActivity", "Click no btnPlay");
 
             if (currentAudioPath != null) {
                 startAudioService("PLAY");
@@ -68,13 +71,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnPause.setOnClickListener(v -> {
-            Log.i("AudioPlayMainActivity", "btnPause");
+            Log.i("AudioPlayMainActivity", "Click no btnPause");
             startAudioService("PAUSE");
         });
 
         btnStop.setOnClickListener(v -> {
-            Log.i("AudioPlayMainActivity", "btnStop");
+            Log.i("AudioPlayMainActivity", "Click btnStop");
             startAudioService("STOP");
+
+            // Esconder o botão Play
+            findViewById(R.id.btnPlay).setVisibility(Button.GONE);
+
+            // Resetar o título para o padrão (você pode definir o texto que quiser)
+            tvTitulo.setText("Nenhuma música selecionada");
+
+            // Limpar o caminho atual do áudio
+            currentAudioPath = null;
         });
     }
 
@@ -91,24 +103,24 @@ public class MainActivity extends AppCompatActivity {
         startService(intent);
     }
 
-    private void updateSongTitle(Uri uri) {
-        String fileName = "Música selecionada";
-
-        try {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null) {
-                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                if (cursor.moveToFirst() && nameIndex != -1) {
-                    fileName = cursor.getString(nameIndex);
-                    fileName = fileName.replace(".mp3", "");
-                }
-                cursor.close();
-            }
-        } catch (Exception e) {
-            Log.e("updateSongTitle", "Erro ao obter nome da música: " + e.getMessage());
-        }
-
-        tvTitulo.setText(fileName);
-    }
+//    private void updateSongTitle(Uri uri) {
+//        String fileName = "Música selecionada";
+//
+//        try {
+//            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+//            if (cursor != null) {
+//                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+//                if (cursor.moveToFirst() && nameIndex != -1) {
+//                    fileName = cursor.getString(nameIndex);
+//                    fileName = fileName.replace(".mp3", "");
+//                }
+//                cursor.close();
+//            }
+//        } catch (Exception e) {
+//            Log.e("updateSongTitle", "Erro ao obter nome da música: " + e.getMessage());
+//        }
+//
+//        tvTitulo.setText(fileName);
+//    }
 
 }

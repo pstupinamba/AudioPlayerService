@@ -71,6 +71,9 @@ public class AudioService extends Service {
 
     private void playAudio(String path) {
         try {
+
+            Log.e("AudioService", "Iniciando música! ");
+
             // Se já está tocando a mesma música, não faz nada
             if (mediaPlayer.isPlaying() && currentPlayingPath.equals(path)) {
                 return;
@@ -91,7 +94,8 @@ public class AudioService extends Service {
             mediaPlayer.start();
             currentPlayingPath = path;
 
-            String songName = extractSongName(path);
+            Uri uri = Uri.parse(path);
+            String songName = AudioUtil.extractSongName(this, uri);
             updateNotification("Tocando: " + songName);
 
         } catch (Exception e) {
@@ -125,7 +129,7 @@ public class AudioService extends Service {
         Notification updatedNotification = createNotification(text);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         if (notificationManager != null) {
-            //notificationManager.notify(1, updatedNotification); // Corrigido aqui
+            notificationManager.notify(1, updatedNotification); // Corrigido aqui
         }
     }
 
@@ -134,20 +138,27 @@ public class AudioService extends Service {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "Audio Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
             );
+            serviceChannel.setDescription("Canal para notificações do player de áudio");
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
         }
     }
 
     private Notification createNotification(String text) {
+
+        Log.e("AudioService", "Criação de Notificação" );
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this,
                 0,
                 notificationIntent,
                 PendingIntent.FLAG_IMMUTABLE);
+
+        // Configurar MediaSession
+        mediaSession.setActive(true);
 
         return new Notification.Builder(this, CHANNEL_ID)
                 .setContentTitle("Audio Player")
