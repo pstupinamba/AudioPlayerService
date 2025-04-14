@@ -6,8 +6,19 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
+/**
+ * Classe utilitária para operações com arquivos de áudio
+ * Padrão: Utility Class (métodos estáticos)
+ */
 public class AudioUtil {
 
+    private static final String TAG = "AudioUtil";
+
+    /**
+     * Extrai o nome legível de um arquivo de áudio via ContentResolver
+     * @param uri URI do arquivo (content:// ou file://)
+     * @return Nome do arquivo sem extensão ou fallback padrão
+     */
     public static String extractSongName(Context context, Uri uri) {
         String fileName = "Música desconhecida";
 
@@ -21,13 +32,12 @@ public class AudioUtil {
                     fileName = fileName.replace(".mp3", "").replace(".MP3", "");
                 }
             }
+        } catch (SecurityException e) {
+            Log.w(TAG, "Sem permissão para acessar o arquivo: " + uri);
+            return "Arquivo bloqueado";
         } catch (Exception e) {
-            Log.e("AudioUtils", "Erro ao consultar ContentResolver", e);
-            // Fallback: extrai do último segmento do URI
-            String lastSegment = uri.getLastPathSegment();
-            if (lastSegment != null) {
-                fileName = lastSegment.replace(".mp3", "").replace(".MP3", "");
-            }
+            Log.e(TAG, "Falha inesperada ao ler metadata", e);
+            return "Música desconhecida";
         }
 
         return fileName;

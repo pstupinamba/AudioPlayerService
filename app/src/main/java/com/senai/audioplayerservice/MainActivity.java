@@ -19,21 +19,38 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
+
+/**
+ * Activity principal que gerencia a interface do usuário do player de áudio.
+ * Responsabilidades:
+ * - Seleção de arquivos de música via seletor de conteúdo
+ * - Controle de reprodução (play/pause/stop)
+ * - Atualização da interface conforme o estado do player
+ */
 public class MainActivity extends AppCompatActivity {
 
+    // Componente para exibir o título da música atual
     private TextView tvTitulo;
+
+    // Armazena o caminho URI do áudio selecionado
     private String currentAudioPath;
 
 
+    /**
+     * ActivityResultLauncher para seleção de arquivos de áudio.
+     * Usa o contrato GetContent() padrão do Android para seleção de arquivos.
+     */
     private final ActivityResultLauncher<String> audioPickerLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
+                    // Atualiza o caminho atual do áudio
                     currentAudioPath = uri.toString();
 
+                    // Extrai e exibe o nome do arquivo (sem extensão)
                     String fileName = AudioUtil.extractSongName(this, uri);
                     tvTitulo.setText(fileName);
-
 
                     // Mostrar botão Play após seleção
                     findViewById(R.id.btnPlay).setVisibility(Button.VISIBLE);
@@ -52,14 +69,18 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Inicialização dos componentes de UI
         tvTitulo = findViewById(R.id.tvTitulo);
         Button btnPlay = findViewById(R.id.btnPlay);
         Button btnPause = findViewById(R.id.btnPause);
         Button btnStop = findViewById(R.id.btnStop);
         Button btnSelect = findViewById(R.id.btnSelect);
 
+
+        // Estado inicial - botão Play oculto
         btnPlay.setVisibility(Button.GONE);
 
+        // Configura listeners para os botões
         btnSelect.setOnClickListener(v -> openAudioPicker());
 
         btnPlay.setOnClickListener(v -> {
@@ -82,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             // Esconder o botão Play
             findViewById(R.id.btnPlay).setVisibility(Button.GONE);
 
-            // Resetar o título para o padrão (você pode definir o texto que quiser)
+            // Resetar o título para o padrão
             tvTitulo.setText("Nenhuma música selecionada");
 
             // Limpar o caminho atual do áudio
@@ -90,10 +111,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Abre o seletor de arquivos de áudio
+     * Filtra por tipo MIME "audio/*" para mostrar apenas arquivos de áudio
+     */
     private void openAudioPicker() {
         audioPickerLauncher.launch("audio/*");
     }
 
+    /**
+     * Comunica-se com o AudioService via Intent
+     * @param action Ação a ser executada (PLAY/PAUSE/STOP)
+     */
     private void startAudioService(String action) {
         Intent intent = new Intent(this, AudioService.class);
         intent.setAction(action);
@@ -103,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
         startService(intent);
     }
 
+    //OLD: FOI USADO PARA ATUALIZAR TÍTULO DA MÚSICA QUE ESTÁ SELECIONADA/TOCANDO
+    //FOI SUBSTITUIDO PELA CLASSE AudioUtil
 //    private void updateSongTitle(Uri uri) {
 //        String fileName = "Música selecionada";
 //

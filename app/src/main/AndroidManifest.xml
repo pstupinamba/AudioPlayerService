@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
-    <!-- Permissão para acesso a arquivos (se necessário) -->
+    <!-- Permissão para acesso a arquivos -->
     <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
 
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
@@ -25,7 +25,6 @@
         android:theme="@style/Theme.AudioPlayerService"
         tools:targetApi="31">
 
-        <!-- Declare o AudioService aqui -->
         <service
             android:name=".AudioService"
             android:enabled="true"
