@@ -64,27 +64,31 @@ android {
 }
 
 dependencies {
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.activity)
-    implementation(libs.constraintlayout)
 
-    // Dependências para MediaSessionCompat
-    implementation("androidx.media:media:1.6.0")
+        implementation(libs.appcompat)
+        implementation(libs.material)
+        implementation(libs.activity)
+        implementation(libs.constraintlayout)
 
-    // Testes unitários (JUnit 5 + Mockito)
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.3")
-    testImplementation("org.mockito:mockito-core:5.4.0") // Versão mais recente
-    testImplementation("org.mockito:mockito-junit-jupiter:5.4.0") // Suporte ao JUnit 5
+        // MediaSessionCompat
+        implementation("androidx.media:media:1.6.0")
 
-    // Se estiver usando Kotlin, adicione:
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+        // =================================
+        // Testes unitários (JVM / test/)
+        // =================================
+        testImplementation("junit:junit:4.13.2")
+        testImplementation("org.robolectric:robolectric:4.12.1")
+        testImplementation("org.mockito:mockito-core:5.4.0")
+        testImplementation("org.mockito:mockito-inline:5.4.0")
+        testImplementation("org.mockito:mockito-junit-jupiter:5.4.0")
 
-    // Testes instrumentados (Android)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation("org.mockito:mockito-android:5.4.0") // Mockito para Android
-    androidTestImplementation("de.mannodermaus.junit5:android-test-core:1.3.0")
-    androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:1.3.0")
+        // ===================================
+        // Testes instrumentados (Android / androidTest/)
+        // ===================================
+        androidTestImplementation(libs.ext.junit)
+        androidTestImplementation(libs.espresso.core)
+        androidTestImplementation("org.mockito:mockito-android:5.12.0")
+        androidTestImplementation("de.mannodermaus.junit5:android-test-core:1.3.0")
+        androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:1.3.0")
 }
+
