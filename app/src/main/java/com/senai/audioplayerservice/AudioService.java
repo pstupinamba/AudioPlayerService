@@ -110,7 +110,7 @@ public class AudioService extends Service {
      * - Se está pausado: continua de onde parou
      * - Nova música: prepara e inicia a reprodução
      */
-    private void playAudio(String path) {
+    public void playAudio(String path) {
         try {
 
             Log.e("AudioService", "Iniciando música! ");
@@ -154,7 +154,7 @@ public class AudioService extends Service {
     /**
      * Pausa a reprodução atual (se estiver tocando)
      */
-    private void pauseAudio() {
+    public void pauseAudio() {
         try{
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();
@@ -168,7 +168,7 @@ public class AudioService extends Service {
     /**
      * Para a reprodução e libera recursos
      */
-    private void stopAudio() {
+    public void stopAudio() {
         mediaPlayer.stop();
         currentPlayingPath = null;
         updateNotification("Reprodução parada");
@@ -179,7 +179,7 @@ public class AudioService extends Service {
     /**
      * Atualiza a notificação do foreground service
      */
-    private void updateNotification(String text) {
+    public void updateNotification(String text) {
         try{
             Notification updatedNotification = createNotification(text);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
@@ -195,7 +195,7 @@ public class AudioService extends Service {
     /**
      * Cria o canal de notificação (requerido para Android 8+)
      */
-    private void createNotificationChannel() {
+    public void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
@@ -211,7 +211,7 @@ public class AudioService extends Service {
     /**
      * Cria a notificação com estilo de mídia
      */
-    private Notification createNotification(String text) {
+    public Notification createNotification(String text) {
 
         Log.e("AudioService", "Criação de Notificação" );
 
@@ -254,5 +254,21 @@ public class AudioService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    public void setMediaPlayer(MediaPlayer mediaPlayer) {
+        this.mediaPlayer = mediaPlayer;
+    }
+
+    public void setAudioManager(AudioManager audioManager) {
+        this.audioManager = audioManager;
+    }
+
+    public void setMediaSession(MediaSessionCompat mediaSession) {
+        this.mediaSession = mediaSession;
+    }
+
+    public void setNotification(Notification notification) {
+        this.notification = notification;
     }
 }
